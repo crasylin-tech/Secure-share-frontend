@@ -674,8 +674,15 @@ function OrgFiles({session}){
 
   async function upload(file){
     setUploading(true);
-    try{const fd=new FormData();fd.append('file',file);setFiles(p=>[await api.upload('/api/org-files',fd),...p]);}
-    catch(e){alert(e.message);}
+    try{
+      const fd = new FormData();
+      fd.append('file', file);
+      const uploaded = await api.upload('/api/org-files', fd);
+      setFiles(p => [uploaded, ...p]);
+    }
+    catch(e){
+      alert(e.message);
+    }
     setUploading(false);
   }
 
