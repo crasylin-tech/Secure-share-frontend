@@ -2,159 +2,195 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SecureShare — Безопасный обмен файлами</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>SecureShare</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0a0c10;--surface:#13161d;--surface2:#1a1e28;--surface3:#222736;--border:#2a2f3d;--border2:#353b4d;--accent:#4f7cff;--accent2:#7c5cfc;--accent-glow:rgba(79,124,255,0.15);--green:#2ecc71;--green-bg:rgba(46,204,113,0.1);--red:#e74c3c;--red-bg:rgba(231,76,60,0.1);--amber:#f39c12;--amber-bg:rgba(243,156,18,0.1);--text:#eef0f6;--text2:#8b92a8;--text3:#545b72;--radius:12px;--radius-sm:8px}
+:root{
+  --bg:#0a0c10;--surface:#13161d;--surface2:#1a1e28;--surface3:#222736;
+  --border:#2a2f3d;--border2:#353b4d;
+  --accent:#4f7cff;--accent2:#7c5cfc;--accent-glow:rgba(79,124,255,0.15);
+  --green:#2ecc71;--green-bg:rgba(46,204,113,0.1);
+  --red:#e74c3c;--red-bg:rgba(231,76,60,0.1);
+  --amber:#f39c12;--amber-bg:rgba(243,156,18,0.1);
+  --text:#eef0f6;--text2:#8b92a8;--text3:#545b72;
+  --radius:12px;--radius-sm:8px;
+  --tab-h:60px;
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow:hidden}
 #root{height:100%;display:flex;flex-direction:column}
-.auth-wrap{flex:1;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden}
-.auth-wrap::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(79,124,255,0.08) 0%,transparent 70%);top:-100px;left:-100px;pointer-events:none}
-.auth-wrap::after{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(124,92,252,0.07) 0%,transparent 70%);bottom:-100px;right:-100px;pointer-events:none}
-.auth-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:44px;width:480px;max-width:95vw;position:relative;z-index:1;max-height:95vh;overflow-y:auto}
-.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:32px}
-.auth-logo-icon{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center}
-.auth-logo-text{font-family:'Syne',sans-serif;font-size:20px;font-weight:700}
-.auth-logo-text span{color:var(--accent)}
-.auth-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:6px;letter-spacing:-0.5px}
-.auth-subtitle{color:var(--text2);font-size:13px;margin-bottom:28px}
-.field{margin-bottom:16px}
-.field label{display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:6px}
-.field input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s}
-.field input:focus{border-color:var(--accent)}
-.field input::placeholder{color:var(--text3)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:all 0.2s;line-height:1}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 18px;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:all 0.2s;line-height:1;-webkit-tap-highlight-color:transparent}
 .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;width:100%}
-.btn-primary:hover:not(:disabled){opacity:0.88;transform:translateY(-1px)}
+.btn-primary:hover:not(:disabled){opacity:0.88}
 .btn-primary:disabled{opacity:0.5;cursor:not-allowed}
 .btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
 .btn-secondary:hover{border-color:var(--border2);background:var(--surface3)}
 .btn-success{background:var(--green-bg);color:var(--green);border:1px solid rgba(46,204,113,0.25)}
-.btn-success:hover{background:rgba(46,204,113,0.2)}
 .btn-danger{background:var(--red-bg);color:var(--red);border:1px solid rgba(231,76,60,0.25)}
-.btn-danger:hover{background:rgba(231,76,60,0.2)}
-.btn-sm{padding:7px 13px;font-size:13px}
-.btn-icon{width:34px;height:34px;padding:0;border-radius:var(--radius-sm)}
-.auth-links{display:flex;flex-direction:column;gap:8px;margin-top:18px;text-align:center;font-size:13px;color:var(--text2)}
+.btn-sm{padding:7px 12px;font-size:13px}
+.btn-icon{width:36px;height:36px;padding:0;border-radius:var(--radius-sm)}
+
+/* ── AUTH ── */
+.auth-wrap{flex:1;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden;padding:16px}
+.auth-wrap::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(79,124,255,0.08) 0%,transparent 70%);top:-100px;left:-100px;pointer-events:none}
+.auth-wrap::after{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(124,92,252,0.07) 0%,transparent 70%);bottom:-80px;right:-80px;pointer-events:none}
+.auth-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px 28px;width:100%;max-width:440px;position:relative;z-index:1;overflow-y:auto;max-height:calc(100vh - 32px)}
+.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px}
+.auth-logo-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.auth-logo-text{font-family:'Syne',sans-serif;font-size:19px;font-weight:700}
+.auth-logo-text span{color:var(--accent)}
+.auth-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:5px;letter-spacing:-0.4px}
+.auth-subtitle{color:var(--text2);font-size:13px;margin-bottom:24px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:5px}
+.field input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-size:16px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s;-webkit-appearance:none}
+.field input:focus{border-color:var(--accent)}
+.field input::placeholder{color:var(--text3)}
+.auth-links{display:flex;flex-direction:column;gap:8px;margin-top:16px;text-align:center;font-size:13px;color:var(--text2)}
 .auth-links a{color:var(--accent);cursor:pointer}
-.error-msg{background:var(--red-bg);border:1px solid rgba(231,76,60,0.25);color:var(--red);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;margin-bottom:14px}
-.success-msg{background:var(--green-bg);border:1px solid rgba(46,204,113,0.25);color:var(--green);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;margin-bottom:14px}
-.tabs{display:flex;gap:4px;background:var(--surface2);border-radius:var(--radius-sm);padding:4px;margin-bottom:24px}
-.tab{flex:1;padding:8px;text-align:center;font-size:13px;font-weight:500;cursor:pointer;border-radius:6px;color:var(--text2);transition:all 0.2s}
-.tab.active{background:var(--surface3);color:var(--text);border:1px solid var(--border)}
-.invite-code-box{background:var(--surface2);border:2px solid var(--accent);border-radius:var(--radius);padding:20px 24px;text-align:center;margin:20px 0}
-.invite-code-box .label{font-size:12px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px}
-.invite-code-box .code{font-family:monospace;font-size:28px;font-weight:700;color:var(--accent);letter-spacing:4px}
-.invite-code-box .hint{font-size:12px;color:var(--text3);margin-top:8px}
-.pending-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:20px}
-.pending-screen h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;text-align:center}
-.pending-screen p{font-size:14px;color:var(--text2);text-align:center;max-width:380px}
-.inv-list{width:100%;max-width:480px;display:flex;flex-direction:column;gap:10px}
-.inv-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.inv-card-info{flex:1;min-width:0}
-.inv-card-org{font-size:15px;font-weight:500}
-.inv-card-date{font-size:12px;color:var(--text2);margin-top:2px}
-.inv-card-actions{display:flex;gap:8px;flex-shrink:0}
+.error-msg{background:var(--red-bg);border:1px solid rgba(231,76,60,0.25);color:var(--red);border-radius:var(--radius-sm);padding:10px 13px;font-size:13px;margin-bottom:12px}
+.success-msg{background:var(--green-bg);border:1px solid rgba(46,204,113,0.25);color:var(--green);border-radius:var(--radius-sm);padding:10px 13px;font-size:13px;margin-bottom:12px}
+
+/* ── PENDING (ожидание приглашения) ── */
+.pending-screen{flex:1;display:flex;flex-direction:column;align-items:center;overflow-y:auto;padding:32px 20px 20px}
+.pending-inner{width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:18px}
+.invite-code-box{background:var(--surface2);border:2px solid var(--accent);border-radius:var(--radius);padding:20px;text-align:center;width:100%}
+.invite-code-box .lbl{font-size:11px;color:var(--text2);margin-bottom:7px;text-transform:uppercase;letter-spacing:0.5px}
+.invite-code-box .code{font-family:monospace;font-size:26px;font-weight:700;color:var(--accent);letter-spacing:3px}
+.invite-code-box .hint{font-size:12px;color:var(--text3);margin-top:7px}
+.inv-list{width:100%;display:flex;flex-direction:column;gap:10px}
+.inv-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
+.inv-card-org{font-size:15px;font-weight:500;margin-bottom:3px}
+.inv-card-date{font-size:12px;color:var(--text2);margin-bottom:10px}
+.inv-card-actions{display:flex;gap:8px}
+.inv-card-actions .btn{flex:1}
+
+/* ── APP SHELL ── */
 .app{flex:1;display:flex;overflow:hidden}
-.sidebar{width:260px;min-width:260px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-.sidebar-header{padding:18px 18px 14px;border-bottom:1px solid var(--border)}
-.sidebar-logo{display:flex;align-items:center;gap:9px;margin-bottom:12px}
-.sidebar-logo-icon{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center}
-.sidebar-logo-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700}
-.sidebar-org{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+
+/* ── DESKTOP SIDEBAR (≥ 768px) ── */
+.sidebar{width:252px;min-width:252px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-header{padding:16px 16px 12px;border-bottom:1px solid var(--border)}
+.sidebar-logo{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.sidebar-logo-icon{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center}
+.sidebar-logo-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
+.sidebar-org{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 9px;display:flex;align-items:center;justify-content:space-between;gap:6px}
 .sidebar-org-name{font-weight:500;color:var(--text);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.badge-role{font-size:10px;padding:2px 8px;border-radius:99px;background:var(--accent-glow);color:var(--accent);font-weight:500;flex-shrink:0}
-.sidebar-nav{flex:1;overflow-y:auto;padding:10px 8px}
-.nav-section{margin-bottom:4px}
-.nav-section-title{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.8px;text-transform:uppercase;padding:8px 10px 4px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;color:var(--text2);transition:all 0.15s;margin-bottom:1px}
+.badge-role{font-size:10px;padding:2px 7px;border-radius:99px;background:var(--accent-glow);color:var(--accent);font-weight:500;flex-shrink:0}
+.sidebar-nav{flex:1;overflow-y:auto;padding:8px 6px}
+.nav-section{margin-bottom:2px}
+.nav-section-title{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.7px;text-transform:uppercase;padding:7px 9px 3px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 9px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;color:var(--text2);transition:all 0.15s;margin-bottom:1px;-webkit-tap-highlight-color:transparent}
 .nav-item:hover{background:var(--surface2);color:var(--text)}
 .nav-item.active{background:var(--accent-glow);color:var(--accent)}
 .nav-item .ni{width:15px;height:15px;flex-shrink:0}
-.nav-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:600;min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
-.sidebar-footer{padding:12px 8px;border-top:1px solid var(--border)}
-.user-info{display:flex;align-items:center;gap:10px;padding:8px 10px}
+.sidebar-footer{padding:10px 6px;border-top:1px solid var(--border)}
+.user-info{display:flex;align-items:center;gap:9px;padding:7px 9px}
 .user-name{font-size:13px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .user-role{font-size:11px;color:var(--text2)}
-.logout-btn{margin-left:auto;cursor:pointer;color:var(--text3);transition:color 0.2s;background:none;border:none;display:flex;align-items:center}
+.logout-btn{margin-left:auto;cursor:pointer;color:var(--text3);transition:color 0.2s;background:none;border:none;display:flex;align-items:center;padding:4px}
 .logout-btn:hover{color:var(--red)}
+
+/* ── MAIN AREA ── */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
-.main-header{padding:18px 26px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface);flex-shrink:0}
-.main-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;letter-spacing:-0.3px}
-.main-subtitle{font-size:12px;color:var(--text2);margin-top:1px}
-.main-body{flex:1;overflow-y:auto;padding:22px 26px}
+.main-header{padding:14px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface);flex-shrink:0}
+.main-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;letter-spacing:-0.3px}
+.main-subtitle{font-size:11px;color:var(--text2);margin-top:1px}
+.main-body{flex:1;overflow-y:auto;padding:18px 20px}
+
+/* ── BOTTOM TABBAR (mobile only) ── */
+.tabbar{display:none}
+
+/* ── CHAT LAYOUT ── */
 .chat-layout{flex:1;display:flex;overflow:hidden}
-.chat-list-panel{width:270px;min-width:270px;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--surface);overflow:hidden}
-.chat-list-header{padding:14px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.chat-list-panel{width:260px;min-width:260px;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--surface);overflow:hidden}
+.chat-list-header{padding:12px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .chat-list-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:600}
-.chat-list-body{flex:1;overflow-y:auto;padding:6px}
-.chat-item{padding:11px 12px;border-radius:var(--radius-sm);cursor:pointer;transition:background 0.15s;margin-bottom:2px}
-.chat-item:hover{background:var(--surface2)}
+.chat-list-body{flex:1;overflow-y:auto;padding:5px}
+.chat-item{padding:10px 11px;border-radius:var(--radius-sm);cursor:pointer;transition:background 0.15s;margin-bottom:2px;-webkit-tap-highlight-color:transparent}
+.chat-item:hover,.chat-item:active{background:var(--surface2)}
 .chat-item.active{background:var(--accent-glow);border:1px solid rgba(79,124,255,0.2)}
 .chat-item-name{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chat-item-meta{font-size:11px;color:var(--text2);margin-top:2px}
+.new-chat-btn-row{padding:7px;border-top:1px solid var(--border)}
 .chat-panel{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.chat-header{padding:12px 18px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;align-items:center;gap:10px;flex-shrink:0}
-.chat-messages{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px}
-.chat-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text3);gap:12px;padding:40px}
-.msg{display:flex;gap:8px}
+.chat-header{padding:10px 14px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;align-items:center;gap:9px;flex-shrink:0}
+.chat-back-btn{display:none;background:none;border:none;color:var(--text2);cursor:pointer;padding:4px;margin-right:2px;-webkit-tap-highlight-color:transparent}
+.chat-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+.chat-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text3);gap:10px;padding:30px}
+.msg{display:flex;gap:7px}
 .msg.own{flex-direction:row-reverse}
-.msg-ava{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}
-.msg-bubble{max-width:65%}
+.msg-ava{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}
+.msg-bubble{max-width:72%}
 .msg-sender{font-size:11px;color:var(--text3);margin-bottom:3px;font-weight:500}
 .msg.own .msg-sender{text-align:right}
-.file-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;display:flex;align-items:center;gap:10px;min-width:210px;cursor:pointer;transition:border-color 0.2s;text-decoration:none}
-.file-card:hover{border-color:var(--border2)}
-.file-icon{width:34px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;letter-spacing:-0.5px}
+.file-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;display:flex;align-items:center;gap:9px;min-width:0;width:100%;cursor:pointer;transition:border-color 0.2s;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.file-card:active{border-color:var(--border2)}
+.file-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;letter-spacing:-0.5px}
 .file-info{flex:1;min-width:0}
 .file-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
 .file-size{font-size:11px;color:var(--text2);margin-top:1px}
-.msg-time{font-size:10px;color:var(--text3);margin-top:4px;text-align:right}
-.chat-input-area{padding:12px 18px;border-top:1px solid var(--border);background:var(--surface);flex-shrink:0}
-.chat-input-row{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:7px 7px 7px 14px}
+.msg-time{font-size:10px;color:var(--text3);margin-top:3px;text-align:right}
+.chat-input-area{padding:10px 14px;padding-bottom:calc(10px + var(--safe-bottom));border-top:1px solid var(--border);background:var(--surface);flex-shrink:0}
+.chat-input-row{display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:6px 6px 6px 13px}
 .chat-input-placeholder{flex:1;font-size:14px;color:var(--text3)}
-.file-attach-btn{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:var(--radius-sm);background:var(--accent-glow);color:var(--accent);font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(79,124,255,0.2);transition:all 0.2s}
-.file-attach-btn:hover{background:rgba(79,124,255,0.25)}
+.file-attach-btn{display:flex;align-items:center;gap:5px;padding:8px 12px;border-radius:var(--radius-sm);background:var(--accent-glow);color:var(--accent);font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(79,124,255,0.2);white-space:nowrap;-webkit-tap-highlight-color:transparent}
 .uploading{opacity:0.6;pointer-events:none}
-.no-chat-selected{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text3);gap:14px}
-.new-chat-btn-row{padding:8px;border-top:1px solid var(--border)}
-.org-files-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-top:18px}
-.org-file-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;flex-direction:column;gap:9px}
+.no-chat-selected{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text3);gap:12px}
+
+/* ── ORG FILES ── */
+.org-files-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:14px}
+.org-file-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:8px}
 .org-file-card:hover{border-color:var(--border2)}
-.org-file-actions{display:flex;gap:6px;margin-top:auto}
-.upload-drop{border:2px dashed var(--border2);border-radius:var(--radius);padding:32px 24px;text-align:center;cursor:pointer;transition:all 0.2s;color:var(--text2);margin-bottom:18px}
-.upload-drop:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-glow)}
-.employees-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:18px}
-.employee-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:10px}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(4px)}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:28px;width:420px;max-width:95vw;max-height:90vh;overflow-y:auto}
-.modal-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:5px}
-.modal-sub{font-size:13px;color:var(--text2);margin-bottom:20px}
-.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
-.settings-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;margin-bottom:14px}
-.settings-section-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.settings-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
+.org-file-actions{display:flex;gap:5px;margin-top:auto}
+.upload-drop{border:2px dashed var(--border2);border-radius:var(--radius);padding:28px 20px;text-align:center;cursor:pointer;transition:all 0.2s;color:var(--text2);margin-bottom:14px;-webkit-tap-highlight-color:transparent}
+.upload-drop:hover,.upload-drop:active{border-color:var(--accent);color:var(--accent);background:var(--accent-glow)}
+
+/* ── EMPLOYEES ── */
+.employees-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-top:14px}
+.employee-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;flex-direction:column;gap:9px}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:flex-end;justify-content:center;z-index:200;backdrop-filter:blur(4px)}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:18px 18px 0 0;padding:24px 22px;padding-bottom:calc(24px + var(--safe-bottom));width:100%;max-width:520px;max-height:92vh;overflow-y:auto}
+.modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 20px}
+.modal-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:18px}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+
+/* ── SETTINGS ── */
+.settings-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:15px 18px;margin-bottom:12px}
+.settings-section-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);gap:8px}
 .settings-row:last-child{border-bottom:none;padding-bottom:0}
-.chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;padding:3px 9px;border-radius:99px}
+.settings-row span:first-child{font-size:13px;color:var(--text);flex-shrink:0}
+.settings-row span:last-child{font-size:12px;color:var(--text2);text-align:right}
+
+/* ── CHIPS ── */
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;padding:3px 8px;border-radius:99px}
 .chip-blue{background:var(--accent-glow);color:var(--accent)}
 .chip-green{background:var(--green-bg);color:var(--green)}
 .chip-red{background:var(--red-bg);color:var(--red)}
 .chip-amber{background:var(--amber-bg);color:var(--amber)}
-.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:50px 20px;color:var(--text3)}
-.empty-state p{font-size:14px;text-align:center;max-width:240px}
-.alert{padding:11px 14px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px}
+
+/* ── MISC ── */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:40px 20px;color:var(--text3)}
+.empty-state p{font-size:13px;text-align:center;max-width:220px}
+.alert{padding:10px 13px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:12px;display:flex;align-items:flex-start;gap:7px}
 .alert-green{background:var(--green-bg);border:1px solid rgba(46,204,113,0.25);color:var(--green)}
 .alert-amber{background:var(--amber-bg);border:1px solid rgba(243,156,18,0.25);color:var(--amber)}
-.search-box{position:relative;margin-bottom:14px}
-.search-box input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 14px 9px 34px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s}
+.search-box{position:relative;margin-bottom:12px}
+.search-box input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px 10px 33px;color:var(--text);font-size:16px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s;-webkit-appearance:none}
 .search-box input:focus{border-color:var(--accent)}
-.search-box svg{position:absolute;left:9px;top:50%;transform:translateY(-50%)}
-.user-list{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;max-height:230px;overflow-y:auto;margin-bottom:8px}
-.user-list-item{display:flex;align-items:center;gap:10px;padding:10px 13px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.15s}
+.search-box .si{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:14px;height:14px}
+.user-list{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;max-height:240px;overflow-y:auto;margin-bottom:8px}
+.user-list-item{display:flex;align-items:center;gap:9px;padding:10px 13px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.15s;-webkit-tap-highlight-color:transparent}
 .user-list-item:last-child{border-bottom:none}
-.user-list-item:hover{background:var(--surface2)}
+.user-list-item:hover,.user-list-item:active{background:var(--surface2)}
 .user-list-item.selected{background:var(--accent-glow)}
 .spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.6s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -162,25 +198,97 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 input[type=file]{display:none}
 svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ════════════════════════════════════════
+   MOBILE  (≤ 767px)
+════════════════════════════════════════ */
+@media(max-width:767px){
+  /* Auth */
+  .auth-wrap{align-items:flex-end;padding:0}
+  .auth-card{border-radius:20px 20px 0 0;padding:28px 20px;padding-bottom:calc(28px + var(--safe-bottom));max-width:100%;max-height:94vh;border-bottom:none}
+
+  /* Sidebar → hidden */
+  .sidebar{display:none}
+
+  /* Bottom tabbar */
+  .tabbar{
+    display:flex;position:fixed;bottom:0;left:0;right:0;
+    height:calc(var(--tab-h) + var(--safe-bottom));
+    padding-bottom:var(--safe-bottom);
+    background:var(--surface);border-top:1px solid var(--border);
+    z-index:100;
+  }
+  .tab-item{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;cursor:pointer;color:var(--text3);transition:color 0.15s;
+    font-size:10px;font-weight:500;-webkit-tap-highlight-color:transparent;
+    padding-bottom:2px;
+  }
+  .tab-item.active{color:var(--accent)}
+  .tab-item svg{width:20px;height:20px;margin-bottom:1px}
+
+  /* Main gets bottom padding for tabbar */
+  .main{padding-bottom:calc(var(--tab-h) + var(--safe-bottom))}
+
+  /* Headers */
+  .main-header{padding:12px 16px 10px}
+  .main-body{padding:14px 14px}
+
+  /* Chat: full screen switching between list and panel */
+  .chat-layout{flex-direction:column}
+  .chat-list-panel{width:100%;min-width:0;border-right:none;border-bottom:none}
+  .chat-list-panel.hidden{display:none}
+  .chat-panel.hidden{display:none}
+  .chat-back-btn{display:flex}
+  .chat-header{padding:10px 12px}
+  .chat-messages{padding:12px}
+  .chat-input-area{padding:10px 12px;padding-bottom:calc(10px + var(--safe-bottom))}
+  .msg-bubble{max-width:80%}
+  .file-card{min-width:0}
+
+  /* Org files — 2 col on phone */
+  .org-files-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+
+  /* Employees — single col */
+  .employees-grid{grid-template-columns:1fr}
+
+  /* Modal — full bottom sheet */
+  .modal-overlay{align-items:flex-end}
+  .modal{border-radius:18px 18px 0 0;max-height:88vh;padding:0 18px;padding-bottom:calc(18px + var(--safe-bottom))}
+  .modal-handle{display:block;padding-top:12px}
+
+  /* Pending screen */
+  .pending-screen{padding:24px 16px 20px}
+  .invite-code-box .code{font-size:22px;letter-spacing:2px}
+}
+
+/* ════════════════════════════════════════
+   TABLET  (768–1023px)
+════════════════════════════════════════ */
+@media(min-width:768px) and (max-width:1023px){
+  .sidebar{width:220px;min-width:220px}
+  .chat-list-panel{width:220px;min-width:220px}
+  .org-files-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+  .employees-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script>
 const API_BASE = 'https://secure-share-production-5184.up.railway.app';
-// Для локальной разработки: const API_BASE = 'http://localhost:3000';
 
-const api = {
-  token: localStorage.getItem('ss_token'),
-  setToken(t){ this.token=t; if(t) localStorage.setItem('ss_token',t); else localStorage.removeItem('ss_token'); },
+const api={
+  token:localStorage.getItem('ss_token'),
+  setToken(t){this.token=t;if(t)localStorage.setItem('ss_token',t);else localStorage.removeItem('ss_token');},
   async req(method,path,body,isForm=false){
     const h={};
-    if(this.token) h['Authorization']='Bearer '+this.token;
-    if(!isForm) h['Content-Type']='application/json';
+    if(this.token)h['Authorization']='Bearer '+this.token;
+    if(!isForm)h['Content-Type']='application/json';
     const res=await fetch(API_BASE+path,{method,headers:h,body:isForm?body:(body?JSON.stringify(body):undefined)});
     if(res.status===401){this.setToken(null);localStorage.removeItem('ss_session');location.reload();}
     const data=await res.json().catch(()=>({}));
-    if(!res.ok) throw new Error(data.error||'Ошибка сервера');
+    if(!res.ok)throw new Error(data.error||'Ошибка сервера');
     return data;
   },
   get(p){return this.req('GET',p);},
@@ -203,6 +311,9 @@ const FH={
     });
   },
 };
+
+// detect mobile
+function isMobile(){return window.innerWidth<768;}
 </script>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -228,9 +339,9 @@ const Ico={
   Dl:()=><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
   Up:()=><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>,
   Bld:()=><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
-  Bell:()=><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>,
   Mail:()=><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
   Copy:()=><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>,
+  Back:()=><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>,
   RefreshCw:()=><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>,
 };
 
@@ -241,170 +352,134 @@ function Av({name,size=32}){
   return <div style={{width:size,height:size,borderRadius:'50%',background:ac(name),display:'flex',alignItems:'center',justifyContent:'center',fontSize:size*.34,fontWeight:600,color:'#fff',flexShrink:0}}>{i}</div>;
 }
 
-// ── AUTH SCREEN ──────────────────────────────────────────────
+// ── AUTH ─────────────────────────────────────────────────────
 function AuthScreen({onLogin}){
-  // mode: login | register-org | register-employee
   const [mode,setMode]=useState('login');
   const [f,setF]=useState({name:'',email:'',password:'',orgName:''});
   const [err,setErr]=useState('');
-  const [ok,setOk]=useState('');
   const [loading,setLoading]=useState(false);
   const set=k=>e=>setF(p=>({...p,[k]:e.target.value}));
+  const go=m=>{setMode(m);setErr('');};
 
   async function submit(){
-    setErr('');setOk('');setLoading(true);
+    setErr('');setLoading(true);
     try{
       let data;
-      if(mode==='login'){
-        data=await api.post('/api/auth/login',{email:f.email,password:f.password});
-      } else if(mode==='register-org'){
-        data=await api.post('/api/auth/register-org',{orgName:f.orgName,name:f.name,email:f.email,password:f.password});
-      } else {
-        data=await api.post('/api/auth/register-employee',{name:f.name,email:f.email,password:f.password});
-      }
+      if(mode==='login') data=await api.post('/api/auth/login',{email:f.email,password:f.password});
+      else if(mode==='register-org') data=await api.post('/api/auth/register-org',{orgName:f.orgName,name:f.name,email:f.email,password:f.password});
+      else data=await api.post('/api/auth/register-employee',{name:f.name,email:f.email,password:f.password});
       api.setToken(data.token);
       onLogin(data);
     }catch(e){setErr(e.message);}
     setLoading(false);
   }
 
-  const go=m=>{setMode(m);setErr('');setOk('');};
-
   return(
     <div className="auth-wrap">
       <div className="auth-card">
         <div className="auth-logo">
-          <div className="auth-logo-icon" style={{width:38,height:38}}><Ico.Shield/></div>
+          <div className="auth-logo-icon"><Ico.Shield/></div>
           <div className="auth-logo-text">Secure<span>Share</span></div>
         </div>
-
         {mode==='login'&&<>
           <div className="auth-title">Добро пожаловать</div>
-          <div className="auth-subtitle">Войдите в аккаунт организации или сотрудника</div>
+          <div className="auth-subtitle">Войдите в свой аккаунт</div>
           {err&&<div className="error-msg">{err}</div>}
-          <div className="field"><label>Email</label><input type="email" placeholder="user@company.ru" value={f.email} onChange={set('email')}/></div>
-          <div className="field"><label>Пароль</label><input type="password" placeholder="••••••••" value={f.password} onChange={set('password')}/></div>
+          <div className="field"><label>Email</label><input type="email" placeholder="user@company.ru" value={f.email} onChange={set('email')} autoComplete="email"/></div>
+          <div className="field"><label>Пароль</label><input type="password" placeholder="••••••••" value={f.password} onChange={set('password')} autoComplete="current-password"/></div>
           <button className="btn btn-primary" onClick={submit} disabled={loading}>{loading?'Вход...':'Войти'}</button>
           <div className="auth-links">
             <span>Нет аккаунта? <a onClick={()=>go('register-org')}>Зарегистрировать организацию</a></span>
-            <span>Сотрудник без аккаунта? <a onClick={()=>go('register-employee')}>Зарегистрироваться</a></span>
+            <span>Сотрудник? <a onClick={()=>go('register-employee')}>Зарегистрироваться</a></span>
           </div>
         </>}
-
         {mode==='register-org'&&<>
           <div className="auth-title">Регистрация организации</div>
-          <div className="auth-subtitle">Вы станете администратором и сможете приглашать сотрудников</div>
+          <div className="auth-subtitle">Вы станете администратором</div>
           {err&&<div className="error-msg">{err}</div>}
           <div className="field"><label>Название организации</label><input placeholder="ООО «Пример»" value={f.orgName} onChange={set('orgName')}/></div>
           <div className="field"><label>Ваше имя</label><input placeholder="Иван Петров" value={f.name} onChange={set('name')}/></div>
-          <div className="field"><label>Email</label><input type="email" placeholder="admin@company.ru" value={f.email} onChange={set('email')}/></div>
-          <div className="field"><label>Пароль</label><input type="password" placeholder="Минимум 6 символов" value={f.password} onChange={set('password')}/></div>
+          <div className="field"><label>Email</label><input type="email" value={f.email} onChange={set('email')} autoComplete="email"/></div>
+          <div className="field"><label>Пароль</label><input type="password" value={f.password} onChange={set('password')} autoComplete="new-password"/></div>
           <button className="btn btn-primary" onClick={submit} disabled={loading}>{loading?'Создание...':'Создать организацию'}</button>
-          <div className="auth-links"><a onClick={()=>go('login')}>← Назад к входу</a></div>
+          <div className="auth-links"><a onClick={()=>go('login')}>← Назад</a></div>
         </>}
-
         {mode==='register-employee'&&<>
           <div className="auth-title">Регистрация сотрудника</div>
-          <div className="auth-subtitle">Создайте аккаунт — вы получите личный код для приглашения в организацию</div>
+          <div className="auth-subtitle">Получите личный код для вступления в организацию</div>
           {err&&<div className="error-msg">{err}</div>}
           <div className="field"><label>Полное имя</label><input placeholder="Иван Петров" value={f.name} onChange={set('name')}/></div>
-          <div className="field"><label>Email</label><input type="email" placeholder="ivan@company.ru" value={f.email} onChange={set('email')}/></div>
-          <div className="field"><label>Пароль</label><input type="password" placeholder="Минимум 6 символов" value={f.password} onChange={set('password')}/></div>
+          <div className="field"><label>Email</label><input type="email" value={f.email} onChange={set('email')} autoComplete="email"/></div>
+          <div className="field"><label>Пароль</label><input type="password" value={f.password} onChange={set('password')} autoComplete="new-password"/></div>
           <button className="btn btn-primary" onClick={submit} disabled={loading}>{loading?'Регистрация...':'Зарегистрироваться'}</button>
-          <div className="auth-links"><a onClick={()=>go('login')}>← Назад к входу</a></div>
+          <div className="auth-links"><a onClick={()=>go('login')}>← Назад</a></div>
         </>}
       </div>
     </div>
   );
 }
 
-// ── PENDING SCREEN (сотрудник без организации) ───────────────
+// ── PENDING ──────────────────────────────────────────────────
 function PendingScreen({session,onSessionUpdate,onLogout}){
-  const [invitations,setInvitations]=useState([]);
+  const [invs,setInvs]=useState([]);
   const [loading,setLoading]=useState(true);
   const [copied,setCopied]=useState(false);
   const code=session.user.inviteCode||'—';
 
-  useEffect(()=>{
-    load();
-    const t=setInterval(load,10000); // опрашиваем каждые 10 сек
-    return()=>clearInterval(t);
-  },[]);
+  useEffect(()=>{load();const t=setInterval(load,10000);return()=>clearInterval(t);},[]);
 
-  async function load(){
-    try{ setInvitations(await api.get('/api/invitations/incoming')); }
-    catch{}
-    setLoading(false);
-  }
+  async function load(){try{setInvs(await api.get('/api/invitations/incoming'));}catch{}setLoading(false);}
 
   async function accept(id){
-    try{
-      await api.post(`/api/invitations/${id}/accept`,{});
-      // Обновляем токен и сессию — теперь у пользователя есть org_id
-      const data=await api.get('/api/auth/me');
-      api.setToken(data.token);
-      onSessionUpdate(data);
-    }catch(e){alert(e.message);}
-  }
-
-  async function reject(id){
-    try{ await api.post(`/api/invitations/${id}/reject`,{}); load(); }
+    try{await api.post(`/api/invitations/${id}/accept`,{});const d=await api.get('/api/auth/me');api.setToken(d.token);onSessionUpdate(d);}
     catch(e){alert(e.message);}
   }
+  async function reject(id){try{await api.post(`/api/invitations/${id}/reject`,{});load();}catch(e){alert(e.message);}}
 
-  function copyCode(){
-    navigator.clipboard.writeText(code).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);});
-  }
+  function copyCode(){navigator.clipboard.writeText(code).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);});}
 
   return(
     <div className="pending-screen">
-      <div style={{width:56,height:56,borderRadius:16,background:'linear-gradient(135deg,var(--accent),var(--accent2))',display:'flex',alignItems:'center',justifyContent:'center'}}>
-        <Ico.Mail/>
-      </div>
-      <h2>Добро пожаловать, {session.user.name}!</h2>
-      <p>Вы зарегистрированы как сотрудник. Передайте ваш личный код администратору нужной организации — он отправит вам приглашение.</p>
-
-      <div className="invite-code-box" style={{width:'100%',maxWidth:380}}>
-        <div className="label">Ваш личный код</div>
-        <div className="code">{code}</div>
-        <div className="hint">Сообщите этот код администратору организации</div>
-        <button className="btn btn-secondary btn-sm" style={{marginTop:12}} onClick={copyCode}>
-          <Ico.Copy/> {copied?'Скопировано!':'Копировать'}
-        </button>
-      </div>
-
-      {loading?<div className="spinner" style={{width:24,height:24}}/>:<>
-        {invitations.length>0&&<>
-          <div style={{fontFamily:"'Syne',sans-serif",fontSize:16,fontWeight:600,alignSelf:'flex-start',width:'100%',maxWidth:480}}>
-            Входящие приглашения ({invitations.length})
-          </div>
-          <div className="inv-list">
-            {invitations.map(inv=>(
-              <div key={inv.id} className="inv-card">
-                <div className="inv-card-info">
+      <div className="pending-inner">
+        <div style={{width:52,height:52,borderRadius:14,background:'linear-gradient(135deg,var(--accent),var(--accent2))',display:'flex',alignItems:'center',justifyContent:'center'}}>
+          <Ico.Mail/>
+        </div>
+        <div style={{textAlign:'center'}}>
+          <div style={{fontFamily:"'Syne',sans-serif",fontSize:20,fontWeight:700,marginBottom:6}}>Привет, {session.user.name}!</div>
+          <div style={{fontSize:13,color:'var(--text2)',lineHeight:1.5}}>Передайте ваш личный код администратору организации — он отправит вам приглашение.</div>
+        </div>
+        <div className="invite-code-box">
+          <div className="lbl">Ваш личный код</div>
+          <div className="code">{code}</div>
+          <div className="hint">Сообщите этот код администратору</div>
+          <button className="btn btn-secondary btn-sm" style={{marginTop:10,width:'100%'}} onClick={copyCode}>
+            <Ico.Copy/> {copied?'Скопировано!':'Скопировать код'}
+          </button>
+        </div>
+        {loading?<div className="spinner" style={{width:22,height:22}}/>:<>
+          {invs.length>0&&<>
+            <div style={{fontFamily:"'Syne',sans-serif",fontSize:15,fontWeight:600,alignSelf:'flex-start'}}>Приглашения ({invs.length})</div>
+            <div className="inv-list">
+              {invs.map(inv=>(
+                <div key={inv.id} className="inv-card">
                   <div className="inv-card-org">{inv.org_name}</div>
                   <div className="inv-card-date">{FH.date(inv.created_at)}</div>
+                  <div className="inv-card-actions">
+                    <button className="btn btn-success btn-sm" onClick={()=>accept(inv.id)}><Ico.Check/> Принять</button>
+                    <button className="btn btn-danger btn-sm" onClick={()=>reject(inv.id)}><Ico.X/> Отклонить</button>
+                  </div>
                 </div>
-                <div className="inv-card-actions">
-                  <button className="btn btn-success btn-sm" onClick={()=>accept(inv.id)}><Ico.Check/> Принять</button>
-                  <button className="btn btn-danger btn-sm" onClick={()=>reject(inv.id)}><Ico.X/> Отклонить</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </>}
-        {invitations.length===0&&(
-          <div style={{display:'flex',alignItems:'center',gap:8,color:'var(--text3)',fontSize:13}}>
+              ))}
+            </div>
+          </>}
+          {invs.length===0&&<div style={{display:'flex',alignItems:'center',gap:8,color:'var(--text3)',fontSize:13}}>
             <div className="spinner"/>
             <span>Ожидание приглашения...</span>
-            <button className="btn btn-secondary btn-sm" onClick={load} style={{marginLeft:4}}><Ico.RefreshCw/></button>
-          </div>
-        )}
-      </>}
-
-      <button className="btn btn-secondary btn-sm" onClick={onLogout} style={{marginTop:8}}>
-        <Ico.Out/> Выйти
-      </button>
+            <button className="btn btn-secondary btn-sm" onClick={load}><Ico.RefreshCw/></button>
+          </div>}
+        </>}
+        <button className="btn btn-secondary btn-sm" onClick={onLogout} style={{marginTop:4}}><Ico.Out/> Выйти</button>
+      </div>
     </div>
   );
 }
@@ -413,17 +488,22 @@ function PendingScreen({session,onSessionUpdate,onLogout}){
 function ChatView({session,isInterOrg}){
   const [chats,setChats]=useState(null);
   const [active,setActive]=useState(null);
+  const [showPanel,setShowPanel]=useState(false); // mobile: true = show chat panel
   const [messages,setMessages]=useState([]);
   const [showNew,setShowNew]=useState(false);
   const [uploading,setUploading]=useState(false);
   const endRef=useRef(null);
+  const mobile=isMobile();
 
   useEffect(()=>{loadChats();},[isInterOrg]);
   useEffect(()=>{if(active)loadMsgs(active.id);},[active]);
   useEffect(()=>{endRef.current?.scrollIntoView({behavior:'smooth'});},[messages]);
 
-  async function loadChats(){setChats(null);setActive(null);setMessages([]);try{setChats(await api.get(`/api/chats?interOrg=${isInterOrg}`));}catch{setChats([]);}}
+  async function loadChats(){setChats(null);setActive(null);setShowPanel(false);setMessages([]);try{setChats(await api.get(`/api/chats?interOrg=${isInterOrg}`));}catch{setChats([]);}}
   async function loadMsgs(id){try{setMessages(await api.get(`/api/chats/${id}/messages`));}catch{setMessages([]);}}
+
+  function openChat(c){setActive(c);if(mobile)setShowPanel(true);}
+  function backToList(){setShowPanel(false);}
 
   function chatName(c){
     const o=c.members?.find(m=>m.userId!==session.user.id);
@@ -434,28 +514,29 @@ function ChatView({session,isInterOrg}){
   async function sendFile(file){
     if(!active)return;
     setUploading(true);
-    try{
-      const fd=new FormData();fd.append('file',file);
-      const msg=await api.upload(`/api/chats/${active.id}/upload`,fd);
-      setMessages(p=>[...p,msg]);
-    }catch(e){alert(e.message);}
+    try{const fd=new FormData();fd.append('file',file);const msg=await api.upload(`/api/chats/${active.id}/upload`,fd);setMessages(p=>[...p,msg]);}
+    catch(e){alert(e.message);}
     setUploading(false);
   }
 
   if(chats===null)return<div className="loading-overlay"><div className="spinner"/></div>;
 
+  const listHidden=mobile&&showPanel;
+  const panelHidden=mobile&&!showPanel;
+
   return(
     <div className="chat-layout">
-      <div className="chat-list-panel">
+      {/* Список чатов */}
+      <div className={`chat-list-panel${listHidden?' hidden':''}`}>
         <div className="chat-list-header">
           <span className="chat-list-title">{isInterOrg?'Межорг. чаты':'Внутренние чаты'}</span>
           <button className="btn btn-secondary btn-sm btn-icon" onClick={()=>setShowNew(true)}><Ico.Plus/></button>
         </div>
         <div className="chat-list-body">
           {chats.length===0
-            ?<div className="empty-state" style={{padding:'24px 12px'}}><Ico.Chat/><p>Нет чатов</p></div>
+            ?<div className="empty-state" style={{padding:'20px 10px'}}><Ico.Chat/><p>Нет чатов</p></div>
             :chats.map(c=>(
-              <div key={c.id} className={`chat-item ${active?.id===c.id?'active':''}`} onClick={()=>setActive(c)}>
+              <div key={c.id} className={`chat-item ${active?.id===c.id?'active':''}`} onClick={()=>openChat(c)}>
                 <div className="chat-item-name">{chatName(c)}</div>
                 <div className="chat-item-meta">{FH.date(c.created_at)}</div>
               </div>
@@ -467,13 +548,15 @@ function ChatView({session,isInterOrg}){
         </div>
       </div>
 
+      {/* Панель чата */}
       {active?(
-        <div className="chat-panel">
+        <div className={`chat-panel${panelHidden?' hidden':''}`}>
           <div className="chat-header">
-            <Av name={chatName(active)} size={34}/>
-            <div style={{flex:1}}>
-              <div style={{fontFamily:"'Syne',sans-serif",fontSize:14,fontWeight:600}}>{chatName(active)}</div>
-              <span className="chip chip-green" style={{fontSize:10,marginTop:2}}><Ico.Shield/> Защищённый канал</span>
+            <button className="chat-back-btn" onClick={backToList}><Ico.Back/></button>
+            <Av name={chatName(active)} size={32}/>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontFamily:"'Syne',sans-serif",fontSize:14,fontWeight:600,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{chatName(active)}</div>
+              <span className="chip chip-green" style={{fontSize:10}}><Ico.Shield/> Защищённый</span>
             </div>
           </div>
           <div className="chat-messages">
@@ -505,7 +588,7 @@ function ChatView({session,isInterOrg}){
               {uploading
                 ?<><div className="spinner"/><span style={{fontSize:13,color:'var(--text2)',marginLeft:6}}>Загрузка...</span></>
                 :<><span className="chat-input-placeholder">Прикрепите файл...</span>
-                  <label className="file-attach-btn" htmlFor={`cf${isInterOrg}`}><Ico.Clip/> Прикрепить файл</label>
+                  <label className="file-attach-btn" htmlFor={`cf${isInterOrg}`}><Ico.Clip/> Прикрепить</label>
                   <input type="file" id={`cf${isInterOrg}`} onChange={e=>{if(e.target.files[0])sendFile(e.target.files[0]);e.target.value='';}}/>
                 </>
               }
@@ -513,7 +596,7 @@ function ChatView({session,isInterOrg}){
           </div>
         </div>
       ):(
-        <div className="no-chat-selected"><Ico.Chat/><span style={{fontSize:13}}>Выберите чат или создайте новый</span></div>
+        !panelHidden&&<div className="no-chat-selected"><Ico.Chat/><span style={{fontSize:13}}>Выберите чат или создайте новый</span></div>
       )}
 
       {showNew&&<NewChatModal session={session} isInterOrg={isInterOrg}
@@ -549,13 +632,17 @@ function NewChatModal({session,isInterOrg,onClose,onCreated}){
   return(
     <div className="modal-overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
       <div className="modal">
-        <div className="modal-title">{isInterOrg?'Чат с другой организацией':'Новый чат'}</div>
-        <div className="modal-sub">{isInterOrg?'Поиск по сотрудникам других организаций':'Сотрудники вашей организации'}</div>
+        <div className="modal-handle"/>
+        <div className="modal-title">{isInterOrg?'Чат с другой орг.':'Новый чат'}</div>
+        <div className="modal-sub">{isInterOrg?'Поиск сотрудников других организаций':'Сотрудники вашей организации'}</div>
         {err&&<div className="error-msg">{err}</div>}
-        <div className="search-box"><Ico.Search/><input placeholder="Имя или email..." value={q} onChange={e=>setQ(e.target.value)}/></div>
+        <div className="search-box">
+          <span className="si"><Ico.Search/></span>
+          <input placeholder="Имя или email..." value={q} onChange={e=>setQ(e.target.value)}/>
+        </div>
         <div className="user-list">
           {users.length===0
-            ?<div style={{padding:18,textAlign:'center',color:'var(--text3)',fontSize:13}}>Начните вводить для поиска</div>
+            ?<div style={{padding:16,textAlign:'center',color:'var(--text3)',fontSize:13}}>Начните вводить для поиска</div>
             :users.map(u=>(
               <div key={u.id} className={`user-list-item ${sel?.id===u.id?'selected':''}`} onClick={()=>setSel(u)}>
                 <Av name={u.name} size={28}/>
@@ -587,18 +674,15 @@ function OrgFiles({session}){
 
   async function upload(file){
     setUploading(true);
-    try{
-      const fd = new FormData();
-      fd.append('file', file);
-
-      const uploaded = await api.upload('/api/org-files', fd);
-
-      setFiles(p => [uploaded, ...p]);
-    }
-    catch(e){
-      alert(e.message);
-    }
+    try{const fd=new FormData();fd.append('file',file);setFiles(p=>[await api.upload('/api/org-files',fd),...p]);}
+    catch(e){alert(e.message);}
     setUploading(false);
+  }
+
+  async function del(id){
+    if(!confirm('Удалить?'))return;
+    try{await api.del(`/api/org-files/${id}`);setFiles(p=>p.filter(f=>f.id!==id));}
+    catch(e){alert(e.message);}
   }
 
   if(files===null)return<div className="loading-overlay"><div className="spinner"/></div>;
@@ -606,30 +690,30 @@ function OrgFiles({session}){
   return(
     <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}>
       <div className="main-header">
-        <div><div className="main-title">Файлы организации</div><div className="main-subtitle">Общие документы · {session.org.name}</div></div>
-        {isAdmin&&<label className="btn btn-primary" style={{width:'auto',cursor:'pointer'}} htmlFor="of-inp"><Ico.Up/> Загрузить</label>}
+        <div><div className="main-title">Файлы организации</div><div className="main-subtitle">{session.org.name}</div></div>
+        {isAdmin&&<label className="btn btn-primary" style={{width:'auto',cursor:'pointer',fontSize:13}} htmlFor="of-inp"><Ico.Up/> Загрузить</label>}
         <input type="file" id="of-inp" onChange={e=>{if(e.target.files[0])upload(e.target.files[0]);e.target.value='';}}/>
       </div>
       <div className="main-body">
-        {!isAdmin&&<div className="alert alert-green"><Ico.Shield/> Файлы публикует администратор. Вы можете их скачивать.</div>}
+        {!isAdmin&&<div className="alert alert-green"><Ico.Shield/> Файлы публикует администратор.</div>}
         {isAdmin&&<label className="upload-drop" htmlFor="of-inp">
           {uploading?<><div className="spinner" style={{margin:'0 auto 8px'}}/><p>Загрузка...</p></>
-            :<><Ico.Up/><p>Перетащите файл или нажмите</p><span>До 50 МБ · любые форматы</span></>}
+            :<><Ico.Up/><p>Нажмите для загрузки файла</p><span>До 50 МБ · любые форматы</span></>}
         </label>}
-        {files.length===0?<div className="empty-state"><Ico.File/><p>Файлов организации пока нет</p></div>
+        {files.length===0?<div className="empty-state"><Ico.File/><p>Файлов пока нет</p></div>
           :<div className="org-files-grid">
             {files.map(f=>{
               const fi=FH.icon(f.name);
               return(
                 <div key={f.id} className="org-file-card">
-                  <div className="file-icon" style={{background:fi.b,color:fi.c,width:40,height:40,borderRadius:9,fontSize:11}}>{fi.t}</div>
-                  <div>
-                    <div style={{fontSize:13,fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{f.name}</div>
-                    <div style={{fontSize:11,color:'var(--text2)',marginTop:2}}>{FH.size(f.size)} · {FH.date(f.created_at)}</div>
-                    <div style={{fontSize:11,color:'var(--text2)'}}>{f.uploader_name||'—'}</div>
+                  <div className="file-icon" style={{background:fi.b,color:fi.c,width:36,height:36,borderRadius:8,fontSize:10}}>{fi.t}</div>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:12,fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{f.name}</div>
+                    <div style={{fontSize:11,color:'var(--text2)',marginTop:1}}>{FH.size(f.size)}</div>
+                    <div style={{fontSize:10,color:'var(--text3)'}}>{FH.date(f.created_at)}</div>
                   </div>
                   <div className="org-file-actions">
-                    <button className="btn btn-secondary btn-sm" style={{flex:1}} onClick={()=>FH.download(`${API_BASE}/api/chats/file/${f.file_uuid}`,f.name,api.token)}><Ico.Dl/> Скачать</button>
+                    <button className="btn btn-secondary btn-sm" style={{flex:1,fontSize:12}} onClick={()=>FH.download(`${API_BASE}/api/chats/file/${f.file_uuid}`,f.name,api.token)}><Ico.Dl/></button>
                     {isAdmin&&<button className="btn btn-danger btn-sm btn-icon" onClick={()=>del(f.id)}><Ico.Trash/></button>}
                   </div>
                 </div>
@@ -642,7 +726,7 @@ function OrgFiles({session}){
   );
 }
 
-// ── EMPLOYEES + INVITATIONS ───────────────────────────────────
+// ── EMPLOYEES ────────────────────────────────────────────────
 function Employees({session}){
   const [emps,setEmps]=useState(null);
   const [invSent,setInvSent]=useState([]);
@@ -668,10 +752,9 @@ function Employees({session}){
     setInvErr('');setInvOk('');setInvLoading(true);
     try{
       const r=await api.post('/api/invitations/send',{inviteCode:invCode.trim()});
-      setInvOk(`Приглашение отправлено: ${r.user.name} (${r.user.email})`);
+      setInvOk(`Приглашение отправлено: ${r.user.name}`);
       setInvCode('');
-      const sent=await api.get('/api/invitations/sent');
-      setInvSent(sent);
+      setInvSent(await api.get('/api/invitations/sent'));
     }catch(e){setInvErr(e.message);}
     setInvLoading(false);
   }
@@ -682,35 +765,34 @@ function Employees({session}){
     <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}>
       <div className="main-header">
         <div><div className="main-title">Сотрудники</div><div className="main-subtitle">{session.org.name}</div></div>
-        {isAdmin&&<button className="btn btn-primary" style={{width:'auto'}} onClick={()=>setShowInvite(p=>!p)}><Ico.Mail/> Пригласить</button>}
+        {isAdmin&&<button className="btn btn-primary" style={{width:'auto',fontSize:13}} onClick={()=>setShowInvite(p=>!p)}><Ico.Mail/> Пригласить</button>}
       </div>
       <div className="main-body">
-
         {isAdmin&&showInvite&&(
-          <div className="settings-section" style={{marginBottom:18}}>
-            <div className="settings-section-title"><Ico.Key/> Пригласить сотрудника по личному коду</div>
-            <p style={{fontSize:13,color:'var(--text2)',marginBottom:12}}>Сотрудник должен зарегистрироваться на сайте и сообщить вам свой личный код (начинается с EMP).</p>
+          <div className="settings-section" style={{marginBottom:14}}>
+            <div className="settings-section-title"><Ico.Key/> Пригласить по коду</div>
+            <p style={{fontSize:12,color:'var(--text2)',marginBottom:10}}>Сотрудник должен зарегистрироваться и сообщить вам свой код (EMP...).</p>
             {invErr&&<div className="error-msg">{invErr}</div>}
-            {invOk&&<div className="success-msg"><Ico.Check/> {invOk}</div>}
-            <div style={{display:'flex',gap:8}}>
-              <input style={{flex:1,background:'var(--surface2)',border:'1px solid var(--border)',borderRadius:'var(--radius-sm)',padding:'10px 14px',color:'var(--text)',fontSize:14,fontFamily:"'DM Sans',sans-serif",outline:'none'}}
+            {invOk&&<div className="success-msg">{invOk}</div>}
+            <div style={{display:'flex',gap:7}}>
+              <input style={{flex:1,background:'var(--surface2)',border:'1px solid var(--border)',borderRadius:'var(--radius-sm)',padding:'11px 12px',color:'var(--text)',fontSize:16,fontFamily:"'DM Sans',sans-serif",outline:'none',textTransform:'uppercase'}}
                 placeholder="EMPXXXXX" value={invCode} onChange={e=>setInvCode(e.target.value.toUpperCase())}
                 onKeyDown={e=>e.key==='Enter'&&sendInvite()}/>
-              <button className="btn btn-primary" style={{width:'auto'}} onClick={sendInvite} disabled={invLoading||!invCode}>
+              <button className="btn btn-primary" style={{width:'auto',whiteSpace:'nowrap'}} onClick={sendInvite} disabled={invLoading||!invCode}>
                 {invLoading?'...':'Отправить'}
               </button>
             </div>
-            {invSent.length>0&&<>
-              <div style={{fontSize:12,color:'var(--text3)',marginTop:14,marginBottom:8,textTransform:'uppercase',letterSpacing:'0.5px'}}>Отправленные приглашения</div>
+            {invSent.length>0&&<div style={{marginTop:12}}>
+              <div style={{fontSize:11,color:'var(--text3)',marginBottom:6,textTransform:'uppercase',letterSpacing:'0.5px'}}>Отправленные</div>
               {invSent.map(i=>(
-                <div key={i.id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 0',borderBottom:'1px solid var(--border)',fontSize:13}}>
-                  <span>{i.user_name} <span style={{color:'var(--text2)',fontSize:11}}>({i.email})</span></span>
+                <div key={i.id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'7px 0',borderBottom:'1px solid var(--border)',fontSize:13}}>
+                  <span style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',flex:1,marginRight:8}}>{i.user_name}</span>
                   <span className={`chip ${i.status==='accepted'?'chip-green':i.status==='rejected'?'chip-red':'chip-amber'}`}>
                     {i.status==='accepted'?'Принято':i.status==='rejected'?'Отклонено':'Ожидание'}
                   </span>
                 </div>
               ))}
-            </>}
+            </div>}
           </div>
         )}
 
@@ -718,7 +800,7 @@ function Employees({session}){
           {emps.map(u=>(
             <div key={u.id} className="employee-card">
               <div style={{display:'flex',alignItems:'center',gap:10}}>
-                <Av name={u.name} size={38}/>
+                <Av name={u.name} size={36}/>
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{fontSize:14,fontWeight:500}}>{u.name}{u.id===session.user.id&&<span style={{fontSize:11,color:'var(--text3)',marginLeft:5}}>(вы)</span>}</div>
                   <div style={{fontSize:12,color:'var(--text2)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{u.email}</div>
@@ -726,7 +808,7 @@ function Employees({session}){
               </div>
               <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
                 <span className={`chip ${u.role==='admin'?'chip-blue':'chip-green'}`}>{u.role==='admin'?'Администратор':'Сотрудник'}</span>
-                {isAdmin&&u.id!==session.user.id&&<button className="btn btn-danger btn-sm" onClick={()=>del(u.id)}><Ico.Trash/> Удалить</button>}
+                {isAdmin&&u.id!==session.user.id&&<button className="btn btn-danger btn-sm" onClick={()=>del(u.id)}><Ico.Trash/></button>}
               </div>
             </div>
           ))}
@@ -758,43 +840,41 @@ function Settings({session,onDeleteOrg}){
 
   return(
     <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}>
-      <div className="main-header"><div><div className="main-title">Настройки</div><div className="main-subtitle">Организация и аккаунт</div></div></div>
+      <div className="main-header"><div><div className="main-title">Настройки</div></div></div>
       <div className="main-body">
         {session.org&&<div className="settings-section">
           <div className="settings-section-title"><Ico.Bld/> Организация</div>
-          <div className="settings-row"><span>Название</span><span style={{color:'var(--text2)'}}>{session.org.name}</span></div>
-          <div className="settings-row"><span>Код организации</span><span style={{fontFamily:'monospace',color:'var(--accent)',fontWeight:600}}>{session.org.code}</span></div>
+          <div className="settings-row"><span>Название</span><span>{session.org.name}</span></div>
+          <div className="settings-row"><span>Код орг.</span><span style={{fontFamily:'monospace',color:'var(--accent)',fontWeight:600}}>{session.org.code}</span></div>
         </div>}
         <div className="settings-section">
           <div className="settings-section-title"><Ico.Users/> Профиль</div>
-          <div className="settings-row"><span>Имя</span><span style={{color:'var(--text2)'}}>{session.user.name}</span></div>
-          <div className="settings-row"><span>Email</span><span style={{color:'var(--text2)'}}>{session.user.email}</span></div>
-          <div className="settings-row"><span>Роль</span><span className={`chip ${session.user.role==='admin'?'chip-blue':'chip-green'}`}>{session.user.role==='admin'?'Администратор':'Сотрудник'}</span></div>
+          <div className="settings-row"><span>Имя</span><span>{session.user.name}</span></div>
+          <div className="settings-row"><span>Email</span><span>{session.user.email}</span></div>
+          <div className="settings-row"><span>Роль</span><span className={`chip ${session.user.role==='admin'?'chip-blue':'chip-green'}`}>{session.user.role==='admin'?'Admin':'Сотрудник'}</span></div>
           {session.user.inviteCode&&<div className="settings-row">
-            <span>Личный код</span>
-            <div style={{display:'flex',alignItems:'center',gap:8}}>
-              <span style={{fontFamily:'monospace',color:'var(--accent)',fontWeight:600}}>{session.user.inviteCode}</span>
-              <button className="btn btn-secondary btn-sm" onClick={copyCode}><Ico.Copy/>{copied?' Скопировано':''}</button>
+            <span>Мой код</span>
+            <div style={{display:'flex',alignItems:'center',gap:6}}>
+              <span style={{fontFamily:'monospace',color:'var(--accent)',fontWeight:600,fontSize:13}}>{session.user.inviteCode}</span>
+              <button className="btn btn-secondary btn-sm" style={{padding:'4px 8px',fontSize:11}} onClick={copyCode}><Ico.Copy/>{copied?' ✓':''}</button>
             </div>
           </div>}
         </div>
         <div className="settings-section">
           <div className="settings-section-title"><Ico.Shield/> Безопасность</div>
-          <div className="settings-row"><span>Пароли</span><span className="chip chip-green">bcrypt (cost 10)</span></div>
+          <div className="settings-row"><span>Пароли</span><span className="chip chip-green">bcrypt</span></div>
           <div className="settings-row"><span>Токены</span><span className="chip chip-blue">JWT · 7 дней</span></div>
-          <div className="settings-row"><span>Файлы на диске</span><span className="chip chip-blue">UUID-именование</span></div>
-          <div className="settings-row"><span>Доступ</span><span className="chip chip-green">RBAC + приглашения</span></div>
-          <div className="settings-row"><span>Транспорт</span><span className="chip chip-green">HTTPS + CORS</span></div>
+          <div className="settings-row"><span>Файлы</span><span className="chip chip-blue">UUID-имена</span></div>
+          <div className="settings-row"><span>Доступ</span><span className="chip chip-green">RBAC</span></div>
         </div>
         {isAdmin&&<div className="settings-section" style={{borderColor:'rgba(231,76,60,0.3)'}}>
           <div className="settings-section-title" style={{color:'var(--red)'}}><Ico.Trash/> Опасная зона</div>
-          <p style={{fontSize:13,color:'var(--text2)',marginBottom:12}}>Удаление организации безвозвратно удалит всех сотрудников, файлы и внутренние чаты. Файлы в межорг. чатах останутся.</p>
+          <p style={{fontSize:12,color:'var(--text2)',marginBottom:10}}>Удалит организацию, сотрудников, внутренние чаты и файлы.</p>
           {!confirm
-            ?<button className="btn btn-danger" onClick={()=>setConfirm(true)}>Удалить организацию</button>
-            :<div style={{display:'flex',gap:8,alignItems:'center'}}>
-              <span style={{fontSize:13,color:'var(--red)'}}>Необратимо. Уверены?</span>
-              <button className="btn btn-danger" onClick={deleteOrg} disabled={loading}>{loading?'...':'Да, удалить'}</button>
-              <button className="btn btn-secondary btn-sm" onClick={()=>setConfirm(false)}>Отмена</button>
+            ?<button className="btn btn-danger btn-sm" style={{width:'100%'}} onClick={()=>setConfirm(true)}>Удалить организацию</button>
+            :<div style={{display:'flex',gap:7}}>
+              <button className="btn btn-danger btn-sm" style={{flex:1}} onClick={deleteOrg} disabled={loading}>{loading?'...':'Да, удалить'}</button>
+              <button className="btn btn-secondary btn-sm" style={{flex:1}} onClick={()=>setConfirm(false)}>Отмена</button>
             </div>
           }
         </div>}
@@ -818,35 +898,26 @@ function App(){
     localStorage.setItem('ss_session',JSON.stringify(s));
     return s;
   }
-
-  function onLogin(data){
-    setSession(saveSession(data));
-    setSection('chats');
-  }
-
-  function onSessionUpdate(data){
-    setSession(saveSession(data));
-    setSection('chats');
-  }
-
-  function logout(){
-    api.setToken(null);
-    localStorage.removeItem('ss_session');
-    setSession(null);
-  }
+  function onLogin(data){setSession(saveSession(data));setSection('chats');}
+  function onSessionUpdate(data){setSession(saveSession(data));setSection('chats');}
+  function logout(){api.setToken(null);localStorage.removeItem('ss_session');setSession(null);}
 
   if(!session)return<AuthScreen onLogin={onLogin}/>;
-
   const {user,org}=session;
   const isAdmin=user.role==='admin';
+  if(!org)return<PendingScreen session={session} onSessionUpdate={onSessionUpdate} onLogout={logout}/>;
 
-  // Сотрудник зарегистрирован, но ещё не в организации
-  if(!org){
-    return<PendingScreen session={session} onSessionUpdate={onSessionUpdate} onLogout={logout}/>;
-  }
+  const navItems=[
+    {id:'chats',     label:'Чаты',      icon:<Ico.Chat/>},
+    {id:'interorg',  label:'Внешние',   icon:<Ico.Globe/>},
+    {id:'orgfiles',  label:'Файлы',     icon:<Ico.File/>},
+    {id:'employees', label:'Команда',   icon:<Ico.Users/>},
+    {id:'settings',  label:'Настройки', icon:<Ico.Cog/>},
+  ];
 
   return(
     <div className="app">
+      {/* Desktop sidebar */}
       <div className="sidebar">
         <div className="sidebar-header">
           <div className="sidebar-logo">
@@ -854,9 +925,7 @@ function App(){
             <span className="sidebar-logo-name">SecureShare</span>
           </div>
           <div className="sidebar-org">
-            <div style={{flex:1,minWidth:0}}>
-              <div className="sidebar-org-name">{org.name}</div>
-            </div>
+            <div style={{flex:1,minWidth:0}}><div className="sidebar-org-name">{org.name}</div></div>
             <span className="badge-role">{isAdmin?'Admin':'User'}</span>
           </div>
         </div>
@@ -878,21 +947,33 @@ function App(){
         </nav>
         <div className="sidebar-footer">
           <div className="user-info">
-            <Av name={user.name} size={32}/>
+            <Av name={user.name} size={30}/>
             <div style={{flex:1,minWidth:0}}>
               <div className="user-name">{user.name}</div>
               <div className="user-role">{isAdmin?'Администратор':'Сотрудник'}</div>
             </div>
-            <button className="logout-btn" onClick={logout} title="Выйти"><Ico.Out/></button>
+            <button className="logout-btn" onClick={logout}><Ico.Out/></button>
           </div>
         </div>
       </div>
+
+      {/* Main content */}
       <div className="main">
         {section==='chats'    &&<ChatView key="in"  session={session} isInterOrg={false}/>}
         {section==='interorg' &&<ChatView key="io"  session={session} isInterOrg={true}/>}
         {section==='orgfiles' &&<OrgFiles           session={session}/>}
         {section==='employees'&&<Employees          session={session}/>}
         {section==='settings' &&<Settings           session={session} onDeleteOrg={logout}/>}
+      </div>
+
+      {/* Mobile bottom tabbar */}
+      <div className="tabbar">
+        {navItems.map(({id,label,icon})=>(
+          <div key={id} className={`tab-item ${section===id?'active':''}`} onClick={()=>setSection(id)}>
+            {icon}
+            <span>{label}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
