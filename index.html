@@ -271,11 +271,49 @@ svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-l
   .org-files-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
   .employees-grid{grid-template-columns:1fr}
 }
+
+[data-theme="light"]{
+  --bg:#f5f7fb;--surface:#ffffff;--surface2:#f3f5f9;--surface3:#e9edf5;
+  --border:#d7dde8;--border2:#c7cfdd;
+  --accent:#3b6df6;--accent2:#7c5cfc;--accent-glow:rgba(59,109,246,0.12);
+  --green:#1f9d55;--green-bg:rgba(31,157,85,0.10);
+  --red:#d64545;--red-bg:rgba(214,69,69,0.10);
+  --amber:#c98500;--amber-bg:rgba(201,133,0,0.10);
+  --text:#1f2937;--text2:#5b6475;--text3:#8a93a5;
+}
+.theme-toggle{
+ position:fixed;top:14px;right:14px;z-index:9999;
+ background:var(--surface);color:var(--text);
+ border:1px solid var(--border);border-radius:10px;
+ padding:10px 14px;cursor:pointer;font-size:13px;
+ box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script>
+
+const savedTheme=localStorage.getItem('ss_theme')||'dark';
+document.documentElement.setAttribute('data-theme',savedTheme);
+function toggleTheme(){
+ const next=document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';
+ document.documentElement.setAttribute('data-theme',next);
+ localStorage.setItem('ss_theme',next);
+ const b=document.getElementById('themeToggle');
+ if(b)b.textContent=next==='light'?'🌙 Тёмная':'☀️ Светлая';
+}
+window.addEventListener('DOMContentLoaded',()=>{
+ const btn=document.createElement('button');
+ btn.id='themeToggle';
+ btn.className='theme-toggle';
+ const t=document.documentElement.getAttribute('data-theme');
+ btn.textContent=t==='light'?'🌙 Тёмная':'☀️ Светлая';
+ btn.onclick=toggleTheme;
+ document.body.appendChild(btn);
+});
+
 const API_BASE = 'https://secure-share-production-5184.up.railway.app';
 
 const api={
